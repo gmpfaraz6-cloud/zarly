@@ -39,7 +39,15 @@ function SignIn() {
       setError(signInError.message);
       setLoading(false);
     } else {
-      navigate('/admin/dashboard');
+      // Check if on admin domain
+      const hostname = window.location.hostname;
+      const isAdminDomain = hostname.startsWith('admin.') || hostname.includes('admin');
+      
+      if (isAdminDomain) {
+        navigate('/dashboard');
+      } else {
+        navigate('/admin/dashboard');
+      }
     }
   };
 

@@ -495,13 +495,17 @@ function Dashboard() {
                 <button
                   className="sub-nav-item"
                   onClick={() => {
-                    // If on admin subdomain (admin.zarly.com), open main domain (zarly.com)
+                    // If on admin subdomain (admin.zarly.store), open main domain (zarly.store)
                     const hostname = window.location.hostname;
                     if (hostname.startsWith('admin.')) {
                       const storeDomain = hostname.replace('admin.', '');
-                      window.open(`https://${storeDomain}`, '_blank');
+                      const protocol = window.location.protocol; // http: or https:
+                      window.open(`${protocol}//${storeDomain}`, '_blank');
+                    } else if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                      // Local development - open root path
+                      window.open('/', '_blank');
                     } else {
-                      // Otherwise open root path
+                      // On any other domain, try to open without admin prefix
                       window.open('/', '_blank');
                     }
                   }}

@@ -11,6 +11,7 @@ import StorefrontRoutes from './routes/StorefrontRoutes';
 function AuthRoute({ children }) {
   const { user, loading } = useAuth();
   const location = useLocation();
+  const hostname = window.location.hostname;
 
   if (loading) {
     return (
@@ -27,9 +28,21 @@ function AuthRoute({ children }) {
     );
   }
 
-  // Only redirect to dashboard if on auth pages (signin/signup)
-  if (user && (location.pathname === '/signin' || location.pathname === '/signup' || location.pathname === '/admin')) {
-    return <Navigate to="/admin/dashboard" replace />;
+  // If user is logged in and on admin domain root or auth pages, redirect to dashboard
+  if (user) {
+    const isAdminDomain = hostname.startsWith('admin.') || hostname.includes('admin');
+    const isAuthPage = location.pathname === '/' || 
+                       location.pathname === '/signin' || 
+                       location.pathname === '/signup' || 
+                       location.pathname === '/admin';
+    
+    if (isAdminDomain && isAuthPage) {
+      return <Navigate to="/dashboard" replace />;
+    }
+    
+    if (location.pathname === '/admin/signin' || location.pathname === '/admin/signup') {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
   }
 
   return children;
