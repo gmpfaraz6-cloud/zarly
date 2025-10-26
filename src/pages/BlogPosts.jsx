@@ -1,43 +1,106 @@
+import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { getBlogPosts, getStore } from '../lib/supabase-queries';
 import './BlogPosts.css';
 
 function BlogPosts() {
+  const { user } = useAuth();
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [store, setStore] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      loadStoreAndBlogPosts();
+    }
+  }, [user]);
+
+  const loadStoreAndBlogPosts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const storeData = await getStore(user.id);
+      if (!storeData) {
+        setError('No store found');
+        setLoading(false);
+        return;
+      }
+      setStore(storeData);
+
+      const blogPostsData = await getBlogPosts(storeData.id);
+      setBlogPosts(blogPostsData || []);
+    } catch (err) {
+      console.error('Error loading blog posts:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="blogposts-page">
+        <div className="blogposts-loading">
+          <div className="loading-spinner"></div>
+          <p>Loading blog posts...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || blogPosts.length === 0) {
+    return (
+      <div className="blogposts-page">
+        <div className="blogposts-content">
+          <div className="blogposts-empty-state">
+            <div className="empty-state-icon">📝</div>
+            <h2 className="empty-state-title">Write blog posts for your store</h2>
+            <p className="empty-state-description">
+              Blogs help you build community, improve SEO, and share your brand story
+            </p>
+            <button className="empty-state-button">Create blog post</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="blog-posts-page">
-      <div className="blog-content">
-        <div className="blog-empty-state">
-          <div className="blog-illustration">
-            <svg width="200" height="200" viewBox="0 0 200 200" fill="none">
-              <rect x="50" y="40" width="100" height="120" rx="8" fill="white" stroke="#E5E7EB" strokeWidth="2"/>
-              {/* Formatting toolbar */}
-              <rect x="60" y="50" width="15" height="15" rx="3" fill="#E5E7EB"/>
-              <rect x="80" y="50" width="15" height="15" rx="3" fill="#E5E7EB"/>
-              <rect x="100" y="50" width="15" height="15" rx="3" fill="#E5E7EB"/>
-              {/* Image placeholder */}
-              <rect x="60" y="75" width="40" height="35" rx="4" fill="#60A5FA"/>
-              <circle cx="70" cy="90" r="5" fill="white"/>
-              {/* Text lines */}
-              <rect x="110" y="80" width="30" height="4" rx="2" fill="#E5E7EB"/>
-              <rect x="110" y="90" width="25" height="4" rx="2" fill="#E5E7EB"/>
-              <rect x="110" y="100" width="28" height="4" rx="2" fill="#E5E7EB"/>
-              {/* Image placeholder 2 */}
-              <rect x="60" y="120" width="40" height="35" rx="4" fill="#34D399"/>
-              <circle cx="70" cy="135" r="5" fill="white"/>
-              {/* More text */}
-              <rect x="110" y="125" width="30" height="4" rx="2" fill="#E5E7EB"/>
-              <rect x="110" y="135" width="25" height="4" rx="2" fill="#E5E7EB"/>
-              <rect x="110" y="145" width="28" height="4" rx="2" fill="#E5E7EB"/>
-            </svg>
+    <div className="blogposts-page">
+      <div className="blogposts-content">
+        <div className="blogposts-table-section">
+          <div className="table-header">
+            <h2>Blog posts ({blogPosts.length})</h2>
+            <button className="btn-primary">Create blog post</button>
           </div>
 
-          <h2 className="blog-empty-title">Write a blog post</h2>
-          <p className="blog-empty-description">
-            Blog posts are a great way to build a community around your products<br />
-            and your brand.
-          </p>
-
-          <div className="blog-empty-actions">
-            <button className="blog-learn-btn" onClick={() => alert('Learn more: This would open documentation about creating and managing blog posts.')}>Learn more</button>
-            <button className="blog-create-btn" onClick={() => alert('Create blog post: This would open a rich text editor to write and publish a new blog post.')}>Create blog post</button>
+          <div className="blogposts-table-wrapper">
+            <table className="blogposts-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Status</th>
+                  <th>Author</th>
+                  <th>Published date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {blogPosts.map((post) => (
+                  <tr key={post.id}>
+                    <td className="post-title">{post.title}</td>
+                    <td>
+                      <span className={`status-badge ${post.status}`}>
+                        {post.status}
+                      </span>
+                    </td>
+                    <td>{post.author || '—'}</td>
+                    <td>{post.published_at ? new Date(post.published_at).toLocaleDateString() : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -46,4 +109,3 @@ function BlogPosts() {
 }
 
 export default BlogPosts;
-

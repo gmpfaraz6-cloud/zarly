@@ -1,45 +1,109 @@
+import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { getGiftCards, getStore } from '../lib/supabase-queries';
 import './GiftCards.css';
 
 function GiftCards() {
+  const { user } = useAuth();
+  const [giftCards, setGiftCards] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [store, setStore] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      loadStoreAndGiftCards();
+    }
+  }, [user]);
+
+  const loadStoreAndGiftCards = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const storeData = await getStore(user.id);
+      if (!storeData) {
+        setError('No store found');
+        setLoading(false);
+        return;
+      }
+      setStore(storeData);
+
+      const giftCardsData = await getGiftCards(storeData.id);
+      setGiftCards(giftCardsData || []);
+    } catch (err) {
+      console.error('Error loading gift cards:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="giftcards-page">
+        <div className="giftcards-loading">
+          <div className="loading-spinner"></div>
+          <p>Loading gift cards...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || giftCards.length === 0) {
+    return (
+      <div className="giftcards-page">
+        <div className="giftcards-content">
+          <div className="giftcards-empty-state">
+            <div className="empty-state-icon">🎁</div>
+            <h2 className="empty-state-title">Manage gift cards</h2>
+            <p className="empty-state-description">
+              Issue gift cards to customers for store credit
+            </p>
+            <button className="empty-state-button">Issue gift card</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="gift-cards-page">
-      <div className="empty-state-content">
-        <div className="empty-state-illustration">
-          <svg width="180" height="180" viewBox="0 0 180 180" fill="none">
-            <circle cx="90" cy="90" r="90" fill="#F9F9F9"/>
-            {/* Gift Card */}
-            <g className="gift-card">
-              <rect x="50" y="70" width="80" height="50" rx="6" fill="url(#giftGradient)" stroke="#E1E3E5" strokeWidth="2"/>
-              <defs>
-                <linearGradient id="giftGradient" x1="50" y1="70" x2="130" y2="120">
-                  <stop offset="0%" stopColor="#4FD1C5"/>
-                  <stop offset="100%" stopColor="#38B2AC"/>
-                </linearGradient>
-              </defs>
-              {/* Ribbon */}
-              <circle cx="90" cy="80" r="8" fill="#FFD700"/>
-              <path d="M90 80v40" stroke="#FFD700" strokeWidth="6"/>
-              <path d="M82 75l-8-8M98 75l8-8" stroke="#FFD700" strokeWidth="3" strokeLinecap="round"/>
-            </g>
-          </svg>
-        </div>
+    <div className="giftcards-page">
+      <div className="giftcards-content">
+        <div className="giftcards-table-section">
+          <div className="table-header">
+            <h2>Gift cards ({giftCards.length})</h2>
+            <button className="btn-primary">Issue gift card</button>
+          </div>
 
-        <h2 className="empty-state-title">Start selling gift cards</h2>
-        <p className="empty-state-description">
-          Add gift card products to sell or create gift cards and send them directly to your customers.
-        </p>
-
-        <div className="button-group">
-          <button className="create-btn secondary">Create gift card</button>
-          <button className="create-btn">Add gift card product</button>
-        </div>
-
-        <p className="terms-text">
-          By using gift cards, you agree to our <a href="#" className="terms-link">Terms of Service</a>
-        </p>
-
-        <div className="empty-state-footer">
-          <a href="#" className="learn-more-link">Learn more about gift cards</a>
+          <div className="giftcards-table-wrapper">
+            <table className="giftcards-table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Customer</th>
+                  <th>Initial value</th>
+                  <th>Balance</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {giftCards.map((card) => (
+                  <tr key={card.id}>
+                    <td className="card-code">{card.code}</td>
+                    <td>{card.customers ? `${card.customers.first_name} ${card.customers.last_name}` : '—'}</td>
+                    <td>${parseFloat(card.initial_value).toFixed(2)}</td>
+                    <td>${parseFloat(card.balance).toFixed(2)}</td>
+                    <td>
+                      <span className={`status-badge ${card.status}`}>
+                        {card.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -47,4 +111,3 @@ function GiftCards() {
 }
 
 export default GiftCards;
-
