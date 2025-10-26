@@ -37,16 +37,36 @@ function AuthRoute({ children }) {
 
 function AppRoutes() {
   const location = useLocation();
+  const hostname = window.location.hostname;
   
-  // Check if we're on an admin route
-  const isAdminRoute = location.pathname.startsWith('/admin');
+  // Check if accessing admin domain or /admin path
+  // Admin domains: admin.zarly.com, admin.yourdomain.com, or localhost/admin
+  const isAdminDomain = hostname.startsWith('admin.') || 
+                        hostname.includes('admin') ||
+                        location.pathname.startsWith('/admin');
 
-  // If admin route, show admin UI
-  if (isAdminRoute) {
+  // If admin domain or admin route, show admin UI
+  if (isAdminDomain) {
     return (
       <Routes>
         <Route 
+          path="/" 
+          element={
+            <AuthRoute>
+              <SignIn />
+            </AuthRoute>
+          } 
+        />
+        <Route 
           path="/admin" 
+          element={
+            <AuthRoute>
+              <SignIn />
+            </AuthRoute>
+          } 
+        />
+        <Route 
+          path="/signin" 
           element={
             <AuthRoute>
               <SignIn />
@@ -62,11 +82,27 @@ function AppRoutes() {
           } 
         />
         <Route 
+          path="/signup" 
+          element={
+            <AuthRoute>
+              <SignUp />
+            </AuthRoute>
+          } 
+        />
+        <Route 
           path="/admin/signup" 
           element={
             <AuthRoute>
               <SignUp />
             </AuthRoute>
+          } 
+        />
+        <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
           } 
         />
         <Route 
@@ -77,12 +113,12 @@ function AppRoutes() {
             </ProtectedRoute>
           } 
         />
-        <Route path="/admin/*" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     );
   }
 
-  // Otherwise, show storefront
+  // Otherwise, show storefront (for store domains like zarly.store)
   return <StorefrontRoutes />;
 }
 

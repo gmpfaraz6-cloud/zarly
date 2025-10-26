@@ -494,7 +494,17 @@ function Dashboard() {
               <div className="sub-nav">
                 <button
                   className="sub-nav-item"
-                  onClick={() => window.open('/', '_blank')}
+                  onClick={() => {
+                    // If on admin subdomain (admin.zarly.com), open main domain (zarly.com)
+                    const hostname = window.location.hostname;
+                    if (hostname.startsWith('admin.')) {
+                      const storeDomain = hostname.replace('admin.', '');
+                      window.open(`https://${storeDomain}`, '_blank');
+                    } else {
+                      // Otherwise open root path
+                      window.open('/', '_blank');
+                    }
+                  }}
                 >
                   View Store
                 </button>
