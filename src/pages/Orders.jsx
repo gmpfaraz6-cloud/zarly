@@ -1,9 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { getOrders, updateOrder, getStore } from '../lib/supabase-queries';
 import './Orders.css';
 
 function Orders({ type = 'orders' }) {
+  const { user } = useAuth();
   const [showMoreActions, setShowMoreActions] = useState(false);
   const [hideAnalytics, setHideAnalytics] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [store, setStore] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -21,6 +29,51 @@ function Orders({ type = 'orders' }) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showMoreActions]);
+
+  useEffect(() => {
+    if (user) {
+      loadStoreAndOrders();
+    }
+  }, [user, type]);
+
+  const loadStoreAndOrders = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const storeData = await getStore(user.id);
+      if (!storeData) {
+        setError('No store found');
+        setLoading(false);
+        return;
+      }
+      setStore(storeData);
+
+      const filters = {};
+      if (type === 'drafts') {
+        filters.financial_status = 'pending';
+      }
+      
+      const ordersData = await getOrders(storeData.id, filters);
+      setOrders(ordersData || []);
+    } catch (err) {
+      console.error('Error loading orders:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (orderId, field, newStatus) => {
+    try {
+      await updateOrder(orderId, { [field]: newStatus });
+      await loadStoreAndOrders();
+    } catch (err) {
+      alert(`Failed to update order ${field}`);
+      console.error(err);
+    }
+  };
+
   const getTitleContent = () => {
     switch(type) {
       case 'drafts':
@@ -67,14 +120,18 @@ function Orders({ type = 'orders' }) {
   };
 
   const emptyState = getEmptyStateText();
-  const showMetrics = type === 'orders'; // Only show metrics on main orders page
+  const showMetrics = type === 'orders';
+  
+  const totalOrders = orders.length;
+  const totalItems = orders.reduce((sum, order) => sum + (order.order_items?.length || 0), 0);
+  const fulfilledOrders = orders.filter(o => o.fulfillment_status === 'fulfilled').length;
+  const totalRevenue = orders.reduce((sum, order) => sum + parseFloat(order.total_price || 0), 0);
+
   const metrics = [
-    { label: 'Orders', value: '0', trend: 'neutral' },
-    { label: 'Items ordered', value: '0', trend: 'neutral' },
-    { label: 'Returns', value: 'SAR 0', trend: 'neutral' },
-    { label: 'Orders fulfilled', value: '0', trend: 'neutral' },
-    { label: 'Orders delivered', value: '0', trend: 'neutral' },
-    { label: 'Order to fulfillment time', value: '0', trend: 'neutral' },
+    { label: 'Orders', value: totalOrders.toString(), trend: 'neutral' },
+    { label: 'Items ordered', value: totalItems.toString(), trend: 'neutral' },
+    { label: 'Revenue', value: `$${totalRevenue.toFixed(2)}`, trend: 'neutral' },
+    { label: 'Orders fulfilled', value: fulfilledOrders.toString(), trend: 'neutral' },
   ];
 
   const toggleMoreActions = () => {
@@ -95,89 +152,155 @@ function Orders({ type = 'orders' }) {
     alert('Create order functionality: This would open a form to create a new order manually.');
   };
 
+  if (loading) {
+    return (
+      <div className="orders-page">
+        <div className="orders-loading">
+          <div className="loading-spinner"></div>
+          <p>Loading orders...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="orders-page">
+        <div className="orders-error">
+          <p>Error: {error}</p>
+          <button onClick={loadStoreAndOrders} className="retry-btn">Retry</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="orders-page">
       <div className="orders-content">
         {showMetrics && !hideAnalytics && (
-          <>
-            <div className="orders-toolbar">
-              <button className="today-filter">
-                <span className="calendar-icon">📅</span>
-                Today
+          <div className="orders-metrics">
+            <div className="metric-time-selector">
+              <button className="time-selector-btn">
+                📅 Last 30 days
               </button>
             </div>
-
-            <div className="orders-metrics">
-              {metrics.map((metric, index) => (
-                <div key={index} className="metric-card">
-                  <div className="metric-header">
-                    <span className="metric-label">{metric.label}</span>
-                  </div>
-                  <div className="metric-value">{metric.value}</div>
-                  <div className="metric-trend">
-                    <span className="trend-indicator">—</span>
-                  </div>
-                  <div className="metric-chart">
-                    <svg width="100%" height="40" viewBox="0 0 120 40" preserveAspectRatio="none">
-                      <path
-                        d="M0,20 L20,18 L40,22 L60,20 L80,19 L100,21 L120,20"
-                        fill="none"
-                        stroke="#E1E3E5"
-                        strokeWidth="2"
-                      />
-                    </svg>
-                  </div>
+            {metrics.map((metric, index) => (
+              <div key={index} className="metric-card">
+                <div className="metric-label">{metric.label}</div>
+                <div className="metric-value-row">
+                  <span className="metric-value">{metric.value}</span>
+                  {metric.trend === 'up' && <span className="metric-trend up">↑ 12%</span>}
+                  {metric.trend === 'down' && <span className="metric-trend down">↓ 5%</span>}
+                  {metric.trend === 'neutral' && <span className="metric-trend neutral">—</span>}
                 </div>
-              ))}
-            </div>
-          </>
+              </div>
+            ))}
+          </div>
         )}
 
-        <div className="orders-empty-state">
-          <div className="empty-state-illustration">
-            {type === 'drafts' ? (
-              <svg width="140" height="140" viewBox="0 0 140 140" fill="none">
-                <circle cx="70" cy="70" r="70" fill="#F1F2F4"/>
-                <circle cx="70" cy="95" r="45" fill="#008060" opacity="0.1"/>
-                {/* Product card */}
-                <rect x="40" y="30" width="60" height="75" rx="6" fill="white" stroke="#E1E3E5" strokeWidth="2"/>
-                {/* T-shirt illustration */}
-                <rect x="52" y="42" width="36" height="30" rx="3" fill="#FF6B6B"/>
-                <rect x="52" y="42" width="12" height="6" rx="2" fill="#FF6B6B"/>
-                <rect x="76" y="42" width="12" height="6" rx="2" fill="#FF6B6B"/>
-                <circle cx="70" cy="52" r="3" fill="white"/>
-                {/* Product details lines */}
-                <rect x="48" y="78" width="20" height="3" rx="1.5" fill="#FFA07A"/>
-                <rect x="48" y="84" width="15" height="2" rx="1" fill="#E1E3E5"/>
-                <rect x="48" y="89" width="18" height="2" rx="1" fill="#E1E3E5"/>
-                <rect x="48" y="94" width="12" height="2" rx="1" fill="#E1E3E5"/>
-              </svg>
-            ) : (
-              <svg width="140" height="140" viewBox="0 0 140 140" fill="none">
-                <circle cx="70" cy="70" r="70" fill="#F1F2F4"/>
-                <circle cx="70" cy="90" r="45" fill="#008060" opacity="0.1"/>
-                <rect x="45" y="35" width="50" height="65" rx="4" fill="white" stroke="#E1E3E5" strokeWidth="2"/>
-                <rect x="52" y="45" width="15" height="3" rx="1.5" fill="#008060"/>
-                <rect x="52" y="53" width="36" height="2" rx="1" fill="#E1E3E5"/>
-                <rect x="52" y="59" width="36" height="2" rx="1" fill="#E1E3E5"/>
-                <circle cx="60" cy="73" r="8" fill="#50B83C" opacity="0.2"/>
-                <circle cx="60" cy="73" r="5" fill="#50B83C"/>
-                <rect x="52" y="85" width="20" height="3" rx="1.5" fill="#FF6B6B" opacity="0.3"/>
-                <rect x="52" y="91" width="15" height="2" rx="1" fill="#E1E3E5"/>
-              </svg>
-            )}
+        <div className="orders-table-section">
+          <div className="orders-table-header">
+            <div className="table-tabs">
+              <button className="tab active">All</button>
+              <button className="tab">Unfulfilled</button>
+              <button className="tab">Unpaid</button>
+              <button className="tab">Open</button>
+              <button className="tab">Closed</button>
+              <button className="tab-more">+</button>
+            </div>
+            <div className="table-header-actions">
+              <button className="icon-btn">🔍</button>
+              <button className="icon-btn">☰</button>
+              <button className="icon-btn">⇅</button>
+              <div className="more-actions-wrapper" ref={dropdownRef}>
+                <button className="icon-btn" onClick={toggleMoreActions}>⋮</button>
+                {showMoreActions && (
+                  <div className="dropdown-menu">
+                    <button className="dropdown-item" onClick={handleExport}>
+                      Export
+                    </button>
+                    <button className="dropdown-item" onClick={toggleAnalytics}>
+                      {hideAnalytics ? 'Show' : 'Hide'} analytics
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-          
-          <h2 className="empty-state-title">{emptyState.title}</h2>
-          <p className="empty-state-description">
-            {emptyState.description}
-          </p>
-          
-          <button className="create-order-btn">{emptyState.buttonText}</button>
-        </div>
 
-        <div className="orders-footer">
-          <a href="#" className="learn-more-link">{emptyState.learnMore}</a>
+          {orders.length === 0 ? (
+            <div className="orders-empty-state">
+              <div className="empty-state-icon">
+                <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                  <rect x="10" y="15" width="40" height="35" rx="2" stroke="#8C9196" strokeWidth="2" fill="none"/>
+                  <path d="M20 15V10a5 5 0 0110 0v5M30 30v5" stroke="#8C9196" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <h2 className="empty-state-title">{emptyState.title}</h2>
+              <p className="empty-state-description">{emptyState.description}</p>
+              <button className="empty-state-button" onClick={handleCreateOrder}>
+                {emptyState.buttonText}
+              </button>
+              <a href="#" className="empty-state-link">{emptyState.learnMore}</a>
+            </div>
+          ) : (
+            <div className="orders-table-wrapper">
+              <table className="orders-table">
+                <thead>
+                  <tr>
+                    <th><input type="checkbox" /></th>
+                    <th>Order</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Total</th>
+                    <th>Payment</th>
+                    <th>Fulfillment</th>
+                    <th>Items</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((order) => (
+                    <tr key={order.id}>
+                      <td><input type="checkbox" /></td>
+                      <td className="order-number">#{order.order_number}</td>
+                      <td>{new Date(order.created_at).toLocaleDateString()}</td>
+                      <td>
+                        {order.customers ? 
+                          `${order.customers.first_name} ${order.customers.last_name}` : 
+                          order.email || 'Guest'}
+                      </td>
+                      <td className="order-total">${parseFloat(order.total_price).toFixed(2)}</td>
+                      <td>
+                        <select 
+                          className={`status-badge payment-${order.financial_status}`}
+                          value={order.financial_status}
+                          onChange={(e) => handleStatusChange(order.id, 'financial_status', e.target.value)}
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="authorized">Authorized</option>
+                          <option value="paid">Paid</option>
+                          <option value="refunded">Refunded</option>
+                        </select>
+                      </td>
+                      <td>
+                        <select 
+                          className={`status-badge fulfillment-${order.fulfillment_status}`}
+                          value={order.fulfillment_status}
+                          onChange={(e) => handleStatusChange(order.id, 'fulfillment_status', e.target.value)}
+                        >
+                          <option value="unfulfilled">Unfulfilled</option>
+                          <option value="partial">Partial</option>
+                          <option value="fulfilled">Fulfilled</option>
+                          <option value="cancelled">Cancelled</option>
+                        </select>
+                      </td>
+                      <td>{order.order_items?.length || 0} items</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -185,4 +308,3 @@ function Orders({ type = 'orders' }) {
 }
 
 export default Orders;
-
