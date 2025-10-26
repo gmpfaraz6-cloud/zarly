@@ -1,16 +1,44 @@
 import { useState, useEffect } from 'react';
 import Header from './Header';
 import Footer from './Footer';
+import MobileBottomNav from './MobileBottomNav';
 import { CartProvider } from '../context/CartContext';
+import { ToastProvider } from './Toast';
+import { PageLoader } from './LoadingStates';
 import { supabase } from '../../lib/supabase';
+import { initAllScrollAnimations, cleanupScrollAnimations } from '../utils/scrollAnimations';
+import '../styles/variables.css';
 import './StorefrontLayout.css';
 
 function StorefrontLayout({ children }) {
   const [store, setStore] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [scrollY, setScrollY] = useState(0);
+  const [scrollDirection, setScrollDirection] = useState('up');
 
   useEffect(() => {
     loadStore();
+    
+    // Initialize scroll animations
+    const observers = initAllScrollAnimations();
+    
+    // Track scroll position
+    let lastScrollY = window.pageYOffset;
+    const handleScroll = () => {
+      const currentScrollY = window.pageYOffset;
+      setScrollY(currentScrollY);
+      setScrollDirection(currentScrollY > lastScrollY ? 'down' : 'up');
+      lastScrollY = currentScrollY;
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (Array.isArray(observers)) {
+        cleanupScrollAnimations(...observers);
+      }
+    };
   }, []);
 
   const loadStore = async () => {
@@ -51,11 +79,7 @@ function StorefrontLayout({ children }) {
   };
 
   if (loading) {
-    return (
-      <div className="storefront-loading">
-        <div className="loading-spinner"></div>
-      </div>
-    );
+    return <PageLoader message="Loading store..." />;
   }
 
   if (!store) {
@@ -63,21 +87,28 @@ function StorefrontLayout({ children }) {
       <div className="storefront-error">
         <h1>Store Not Found</h1>
         <p>This store is not yet configured.</p>
-        <a href="/admin">Go to Admin</a>
+        <a href="/admin" className="error-link">Go to Admin</a>
       </div>
     );
   }
 
   return (
-    <CartProvider storeId={store.id}>
-      <div className="storefront">
-        <Header store={store} />
-        <main className="storefront-main">
-          {children}
-        </main>
-        <Footer store={store} />
-      </div>
-    </CartProvider>
+    <ToastProvider>
+      <CartProvider storeId={store.id}>
+        <div 
+          className="storefront" 
+          data-scroll-y={scrollY}
+          data-scroll-direction={scrollDirection}
+        >
+          <Header store={store} scrollY={scrollY} scrollDirection={scrollDirection} />
+          <main className="storefront-main">
+            {children}
+          </main>
+          <Footer store={store} />
+          <MobileBottomNav />
+        </div>
+      </CartProvider>
+    </ToastProvider>
   );
 }
 
