@@ -1,0 +1,154 @@
+.inventory-page {
+  width: 100%;
+  height: 100%;
+}
+
+.inventory-content {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.inventory-table-container {
+  background: white;
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.inventory-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  background: white;
+}
+
+.inventory-table-wrapper {
+  overflow-x: auto;
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+}
+
+.inventory-table thead {
+  background: #f9fafb;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.inventory-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.sort-arrow {
+  margin-left: 4px;
+  font-size: 10px;
+  color: var(--text-light);
+}
+
+.inventory-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.2s;
+}
+
+.inventory-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.inventory-table tbody tr.selected {
+  background: #f0f7ff;
+}
+
+.inventory-table td {
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.sku-col {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.number-col {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.editable-col {
+  min-width: 100px;
+}
+
+.inventory-input {
+  width: 100%;
+  max-width: 100px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.inventory-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(0, 128, 96, 0.1);
+}
+
+.table-pagination {
+  padding: 16px;
+  border-top: 1px solid var(--border-color);
+  background: white;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.pagination-btn:not(:disabled):hover {
+  background: var(--bg-primary);
+  border-color: var(--text-secondary);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pagination-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-left: 8px;
+}
+

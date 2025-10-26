@@ -1,0 +1,136 @@
+.campaigns-page {
+  width: 100%;
+  min-height: calc(100vh - 56px);
+  background: var(--bg-primary);
+}
+
+.campaigns-content {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.campaigns-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: white;
+  border: 1.5px solid var(--border-color);
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.campaigns-badge svg {
+  color: var(--text-light);
+}
+
+.campaigns-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tab-btn {
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--text-primary);
+}
+
+.tab-btn.plus-tab {
+  font-size: 18px;
+  font-weight: 400;
+  padding: 8px 14px;
+}
+
+.campaign-tracking-card {
+  background: white;
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  padding: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+}
+
+.tracking-card-content {
+  flex: 1;
+  max-width: 600px;
+}
+
+.tracking-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 16px 0;
+}
+
+.tracking-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+}
+
+.tracking-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.create-btn {
+  padding: 10px 20px;
+  background: var(--text-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.create-btn:hover {
+  background: #000000;
+}
+
+.learn-more-btn {
+  padding: 10px 20px;
+  background: white;
+  color: var(--text-primary);
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.learn-more-btn:hover {
+  background: var(--bg-primary);
+  border-color: var(--text-secondary);
+}
+
+.tracking-illustration {
+  flex-shrink: 0;
+}
+

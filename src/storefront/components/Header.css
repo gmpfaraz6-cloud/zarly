@@ -1,0 +1,164 @@
+.storefront-header {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #E1E3E5;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  gap: 32px;
+}
+
+.mobile-menu-btn {
+  display: none;
+  padding: 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #202223;
+}
+
+.store-logo {
+  text-decoration: none;
+  color: #202223;
+}
+
+.store-logo h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex: 1;
+  justify-content: center;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #202223;
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #6D7175;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-action-btn {
+  padding: 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #202223;
+  transition: color 0.2s;
+  position: relative;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-action-btn:hover {
+  color: #6D7175;
+}
+
+.cart-btn {
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background-color: #202223;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.search-bar {
+  padding: 16px 0;
+  border-top: 1px solid #E1E3E5;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #C9CCCF;
+  border-radius: 6px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #202223;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .main-nav {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background-color: white;
+    flex-direction: column;
+    gap: 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #E1E3E5;
+    display: none;
+  }
+
+  .main-nav.open {
+    display: flex;
+  }
+
+  .nav-link {
+    width: 100%;
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid #F7F7F7;
+  }
+
+  .header-content {
+    gap: 16px;
+  }
+
+  .store-logo h1 {
+    font-size: 20px;
+  }
+}
+

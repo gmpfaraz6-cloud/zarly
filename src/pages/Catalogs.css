@@ -1,0 +1,73 @@
+.catalogs-page {
+  width: 100%;
+  min-height: calc(100vh - 56px);
+  background: var(--bg-primary);
+}
+
+.catalogs-content {
+  padding: 60px 24px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.catalogs-empty {
+  background: white;
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.catalogs-illustration {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.catalogs-empty-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+}
+
+.catalogs-empty-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0 0 32px 0;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.catalogs-create-btn {
+  padding: 10px 20px;
+  background: var(--text-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 24px;
+}
+
+.catalogs-create-btn:hover {
+  background: #000000;
+}
+
+.catalogs-footer-link {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.catalogs-footer-link a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.catalogs-footer-link a:hover {
+  text-decoration: underline;
+}
+

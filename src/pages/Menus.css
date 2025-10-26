@@ -1,0 +1,65 @@
+.menus-page {
+  width: 100%;
+  min-height: calc(100vh - 56px);
+  background: var(--bg-primary);
+}
+
+.menus-content {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.menus-table {
+  width: 100%;
+  background: white;
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  border-collapse: collapse;
+  overflow: hidden;
+}
+
+.menus-table thead {
+  background: var(--bg-primary);
+}
+
+.menus-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1.5px solid var(--border-color);
+}
+
+.sort-icon {
+  font-size: 10px;
+  margin-left: 4px;
+  color: var(--text-light);
+}
+
+.menus-table td {
+  padding: 16px;
+  font-size: 13px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.menus-table tbody tr:hover {
+  background: var(--bg-primary);
+}
+
+.menu-name-link {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.menu-name-link:hover {
+  text-decoration: underline;
+}
+
+.menu-items-cell {
+  color: var(--text-secondary);
+}
+

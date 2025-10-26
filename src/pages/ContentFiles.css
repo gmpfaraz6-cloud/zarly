@@ -1,0 +1,178 @@
+.content-files-page {
+  width: 100%;
+  min-height: calc(100vh - 56px);
+  background: var(--bg-primary);
+}
+
+.files-content {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.files-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.file-tab {
+  padding: 10px 16px;
+  background: white;
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px 8px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.file-tab.active {
+  color: var(--text-primary);
+  background: white;
+  border-bottom-color: white;
+}
+
+.file-tab-add {
+  padding: 8px 14px;
+  background: white;
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px 8px 0 0;
+  font-size: 18px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.files-table-container {
+  background: white;
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table-toolbar-files {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  gap: 8px;
+}
+
+.toolbar-icon-btn-files {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.toolbar-icon-btn-files:hover {
+  background: var(--bg-primary);
+}
+
+.files-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.files-table thead {
+  background: var(--bg-primary);
+}
+
+.files-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1.5px solid var(--border-color);
+}
+
+.files-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.files-table tbody tr:hover {
+  background: var(--bg-primary);
+}
+
+.preview-td {
+  width: 60px;
+}
+
+.file-preview {
+  width: 40px;
+  height: 40px;
+  background: var(--bg-primary);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.file-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.file-type {
+  font-size: 11px;
+  color: var(--text-light);
+}
+
+.file-date, .file-size {
+  color: var(--text-secondary);
+}
+
+.file-references {
+  color: var(--text-secondary);
+}
+
+.files-pagination {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+.pagination-btn {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.pagination-btn:hover {
+  background: var(--bg-primary);
+}
+
+.pagination-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+

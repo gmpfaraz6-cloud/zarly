@@ -1,0 +1,79 @@
+.blog-posts-page {
+  width: 100%;
+  min-height: calc(100vh - 56px);
+  background: var(--bg-primary);
+}
+
+.blog-content {
+  padding: 60px 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.blog-empty-state {
+  background: white;
+  border: 1.5px solid var(--border-color);
+  border-radius: 16px;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.blog-illustration {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.blog-empty-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+}
+
+.blog-empty-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 32px 0;
+}
+
+.blog-empty-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.blog-learn-btn {
+  padding: 10px 20px;
+  background: white;
+  color: var(--text-primary);
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.blog-learn-btn:hover {
+  background: var(--bg-primary);
+  border-color: var(--text-secondary);
+}
+
+.blog-create-btn {
+  padding: 10px 20px;
+  background: var(--text-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.blog-create-btn:hover {
+  background: #000000;
+}
+

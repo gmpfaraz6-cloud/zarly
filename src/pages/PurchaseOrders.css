@@ -1,0 +1,98 @@
+.purchase-orders-page {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.empty-state-content {
+  max-width: 600px;
+  margin: 80px auto;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.empty-state-illustration {
+  margin-bottom: 40px;
+  animation: floatAnimation 3s ease-in-out infinite;
+}
+
+@keyframes floatAnimation {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.empty-state-illustration .document {
+  animation: slideIn 0.6s ease-out;
+}
+
+.empty-state-illustration .package {
+  animation: slideIn 0.6s ease-out 0.2s backwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.empty-state-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.empty-state-description {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.create-btn {
+  padding: 12px 24px;
+  background: var(--text-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.create-btn:hover {
+  background: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.empty-state-footer {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-color);
+}
+
+.learn-more-link {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.learn-more-link:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
