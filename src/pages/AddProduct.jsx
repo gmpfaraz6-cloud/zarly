@@ -1,15 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { createProduct, getStore, uploadProductImage } from '../lib/supabase-queries';
+import { supabase } from '../lib/supabase';
 import './AddProduct.css';
 
 function AddProduct({ onClose }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     category: '',
     price: '0.00',
-    status: 'Active',
+    status: 'active',
     type: '',
     vendor: '',
     collections: '',
@@ -19,6 +23,9 @@ function AddProduct({ onClose }) {
     physicalProduct: true,
     weight: '0.0'
   });
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const handleBack = () => {
     if (onClose) {
@@ -28,25 +35,125 @@ function AddProduct({ onClose }) {
     }
   };
 
-  const handleSave = () => {
+  const handleImageUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    setUploading(true);
+    try {
+      const storeData = await getStore(user.id);
+      if (!storeData) {
+        alert('Store not found');
+        return;
+      }
+
+      const uploadedImages = [];
+      for (const file of files) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${storeData.id}/${fileName}`;
+
+        const { data, error } = await supabase.storage
+          .from('product-images')
+          .upload(filePath, file);
+
+        if (error) throw error;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(filePath);
+
+        uploadedImages.push({
+          url: publicUrl,
+          path: filePath,
+          alt: file.name
+        });
+      }
+
+      setImages([...images, ...uploadedImages]);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemoveImage = async (index) => {
+    const imageToRemove = images[index];
+    
+    try {
+      if (imageToRemove.path) {
+        await supabase.storage
+          .from('product-images')
+          .remove([imageToRemove.path]);
+      }
+      setImages(images.filter((_, i) => i !== index));
+    } catch (error) {
+      console.error('Error removing image:', error);
+      alert('Failed to remove image');
+    }
+  };
+
+  const handleSave = async () => {
     if (!formData.title.trim()) {
       alert('Please enter a product title');
       return;
     }
-    
-    alert(`Product "${formData.title}" saved successfully!`);
-    console.log('Saving product:', formData);
-    
-    // In real app: save to backend/database
-    if (onClose) {
-      onClose();
-    } else {
-      navigate(-1);
+
+    setSaving(true);
+    try {
+      const storeData = await getStore(user.id);
+      if (!storeData) {
+        alert('Store not found');
+        return;
+      }
+
+      const productData = {
+        store_id: storeData.id,
+        title: formData.title,
+        description: formData.description,
+        product_type: formData.type,
+        vendor: formData.vendor,
+        tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
+        status: formData.status.toLowerCase(),
+        price: parseFloat(formData.price) || 0,
+        compare_at_price: null,
+        inventory_quantity: parseInt(formData.quantity) || 0,
+        sku: null,
+        barcode: null,
+        weight: parseFloat(formData.weight) || 0,
+        weight_unit: 'kg',
+        requires_shipping: formData.physicalProduct,
+        track_inventory: formData.inventoryTracked
+      };
+
+      const newProduct = await createProduct(productData, images);
+      
+      alert(`Product "${formData.title}" saved successfully!`);
+      if (onClose) {
+        onClose();
+      } else {
+        navigate(-1);
+      }
+    } catch (error) {
+      console.error('Error saving product:', error);
+      alert('Failed to save product: ' + error.message);
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleCancel = () => {
     if (confirm('Are you sure you want to cancel? All changes will be lost.')) {
+      // Clean up uploaded images
+      images.forEach(async (image) => {
+        if (image.path) {
+          await supabase.storage
+            .from('product-images')
+            .remove([image.path]);
+        }
+      });
       handleBack();
     }
   };
@@ -103,10 +210,35 @@ function AddProduct({ onClose }) {
             <div className="form-card">
               <label className="form-label">Media</label>
               <div className="media-upload">
+                {images.length > 0 && (
+                  <div className="image-preview-grid">
+                    {images.map((image, index) => (
+                      <div key={index} className="image-preview">
+                        <img src={image.url} alt={image.alt} />
+                        <button 
+                          className="remove-image-btn"
+                          onClick={() => handleRemoveImage(index)}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <div className="upload-area">
-                  <button className="upload-btn">Upload new</button>
-                  <button className="upload-btn secondary">Select existing</button>
-                  <p className="upload-hint">Accepts images, videos, or 3D models</p>
+                  <input
+                    type="file"
+                    id="image-upload"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    style={{ display: 'none' }}
+                    disabled={uploading}
+                  />
+                  <label htmlFor="image-upload" className="upload-btn">
+                    {uploading ? 'Uploading...' : 'Upload new'}
+                  </label>
+                  <p className="upload-hint">Accepts images (JPG, PNG, GIF)</p>
                 </div>
               </div>
             </div>
