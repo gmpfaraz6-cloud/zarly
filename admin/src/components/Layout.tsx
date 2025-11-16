@@ -1,4 +1,4 @@
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import Button from './ui/Button';
 import { 
@@ -14,10 +14,15 @@ import {
 export default function Layout() {
   const { signOut, user } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/login');
+  };
+
+  const isActive = (path: string) => {
+    return location.pathname === path || location.pathname.startsWith(path + '/');
   };
 
   return (
@@ -31,49 +36,77 @@ export default function Layout() {
           <nav className="px-4 space-y-2">
             <Link
               to="/dashboard"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                isActive('/dashboard') 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'hover:bg-accent'
+              }`}
             >
               <LayoutDashboard className="w-5 h-5" />
               <span>Dashboard</span>
             </Link>
             <Link
               to="/products"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                isActive('/products') 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'hover:bg-accent'
+              }`}
             >
               <Package className="w-5 h-5" />
               <span>Products</span>
             </Link>
             <Link
               to="/orders"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                isActive('/orders') 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'hover:bg-accent'
+              }`}
             >
               <ShoppingCart className="w-5 h-5" />
               <span>Orders</span>
             </Link>
             <Link
               to="/customers"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                isActive('/customers') 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'hover:bg-accent'
+              }`}
             >
               <Users className="w-5 h-5" />
               <span>Customers</span>
             </Link>
             <Link
               to="/categories"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                isActive('/categories') 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'hover:bg-accent'
+              }`}
             >
               <FolderTree className="w-5 h-5" />
               <span>Categories</span>
             </Link>
             <Link
               to="/inventory"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                isActive('/inventory') 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'hover:bg-accent'
+              }`}
             >
               <Package className="w-5 h-5" />
               <span>Inventory</span>
             </Link>
             <Link
               to="/settings"
-              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                isActive('/settings') 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'hover:bg-accent'
+              }`}
             >
               <Settings className="w-5 h-5" />
               <span>Settings</span>

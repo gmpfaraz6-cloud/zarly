@@ -1,14 +1,18 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
 import { useCartStore } from '../stores/cartStore';
-import { ShoppingCart, User, Menu } from 'lucide-react';
+import { ShoppingCart, User, Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Layout() {
   const { user } = useAuthStore();
   const { getItemCount } = useCartStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
   const cartItemCount = getItemCount();
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <div className="min-h-screen bg-background">
@@ -22,7 +26,12 @@ export default function Layout() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-6">
-              <Link to="/products" className="hover:text-primary transition-colors">
+              <Link 
+                to="/products" 
+                className={`hover:text-primary transition-colors ${
+                  isActive('/products') ? 'text-primary font-medium' : ''
+                }`}
+              >
                 Products
               </Link>
               <Link to="/cart" className="relative hover:text-primary transition-colors">
@@ -57,38 +66,78 @@ export default function Layout() {
               className="md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              <Menu className="w-6 h-6" />
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
 
           {/* Mobile Navigation */}
-          {mobileMenuOpen && (
-            <nav className="md:hidden py-4 border-t border-border">
-              <div className="flex flex-col gap-4">
-                <Link to="/products" className="hover:text-primary transition-colors">
-                  Products
-                </Link>
-                <Link to="/cart" className="flex items-center gap-2 hover:text-primary transition-colors">
-                  <ShoppingCart className="w-5 h-5" />
-                  Cart {cartItemCount > 0 && `(${cartItemCount})`}
-                </Link>
-                {user ? (
-                  <Link to="/orders" className="hover:text-primary transition-colors">
-                    My Orders
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <motion.nav
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className="md:hidden overflow-hidden border-t border-border"
+              >
+                <div className="py-4 flex flex-col gap-4">
+                  <Link 
+                    to="/products" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`hover:text-primary transition-colors ${
+                      isActive('/products') ? 'text-primary font-medium' : ''
+                    }`}
+                  >
+                    Products
                   </Link>
-                ) : (
-                  <>
-                    <Link to="/login" className="hover:text-primary transition-colors">
-                      Login
+                  <Link 
+                    to="/cart" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 hover:text-primary transition-colors"
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    Cart {cartItemCount > 0 && `(${cartItemCount})`}
+                  </Link>
+                  {user ? (
+                    <Link 
+                      to="/orders" 
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`hover:text-primary transition-colors ${
+                        isActive('/orders') ? 'text-primary font-medium' : ''
+                      }`}
+                    >
+                      My Orders
                     </Link>
-                    <Link to="/signup" className="hover:text-primary transition-colors">
-                      Sign Up
-                    </Link>
-                  </>
-                )}
-              </div>
-            </nav>
-          )}
+                  ) : (
+                    <>
+                      <Link 
+                        to="/login" 
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`hover:text-primary transition-colors ${
+                          isActive('/login') ? 'text-primary font-medium' : ''
+                        }`}
+                      >
+                        Login
+                      </Link>
+                      <Link 
+                        to="/signup" 
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`hover:text-primary transition-colors ${
+                          isActive('/signup') ? 'text-primary font-medium' : ''
+                        }`}
+                      >
+                        Sign Up
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </motion.nav>
+            )}
+          </AnimatePresence>
         </div>
       </header>
 
