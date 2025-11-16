@@ -112,16 +112,23 @@ npm run dev
 ### Vercel (Recommended)
 
 1. Push your code to GitHub
-2. Import both projects to Vercel
-3. Set environment variables in Vercel dashboard
-4. Deploy!
+2. Import both projects to Vercel as **separate projects**:
+   - **Admin Project**: Root directory = `admin`
+   - **Storefront Project**: Root directory = `storefront`
+3. Set environment variables in each Vercel project
+4. Configure domains:
+   - `admin.zarly.store` → Admin project
+   - `zarly.store` → Storefront project
+5. Deploy!
 
-### Netlify
+See [docs/DOMAIN_SETUP.md](docs/DOMAIN_SETUP.md) for detailed domain configuration.
 
-1. Push your code to GitHub
-2. Create new sites for admin and storefront
-3. Set environment variables
-4. Deploy!
+### Domain Routing
+
+- **`admin.zarly.store`** → Admin Panel
+- **`zarly.store`** → Storefront
+
+This is configured at the Vercel deployment level. Each app is deployed as a separate project with its own domain.
 
 ## License
 
