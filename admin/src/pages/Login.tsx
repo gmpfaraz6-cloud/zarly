@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuthStore } from '../stores/authStore';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -24,7 +25,12 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="w-full max-w-md p-8 bg-card rounded-lg border border-border shadow-lg">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-md p-8 bg-card rounded-lg border border-border shadow-lg"
+      >
         <h1 className="text-3xl font-bold text-center mb-8">Admin Login</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -53,11 +59,13 @@ export default function Login() {
               placeholder="••••••••"
             />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
-          </Button>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Logging in...' : 'Login'}
+            </Button>
+          </motion.div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }

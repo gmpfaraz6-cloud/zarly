@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Minus, Plus, ArrowLeft } from 'lucide-react';
 import Button from '../components/ui/Button';
+import Skeleton from '../components/Skeleton';
 import { getProduct, type Product } from '../services/products';
 import { useCartStore } from '../stores/cartStore';
 import toast from 'react-hot-toast';
@@ -66,9 +67,18 @@ export default function ProductDetail() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-16">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-muted-foreground">Loading product...</div>
+      <div className="container mx-auto px-4 py-8">
+        <Skeleton className="h-10 w-32 mb-8" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <Skeleton className="h-96 w-full" />
+          <div className="space-y-4">
+            <Skeleton className="h-8 w-3/4" />
+            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-6 w-2/3" />
+            <Skeleton className="h-10 w-32" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+          </div>
         </div>
       </div>
     );

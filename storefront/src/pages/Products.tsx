@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Search, ShoppingCart } from 'lucide-react';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
+import Skeleton from '../components/Skeleton';
 import { getProducts, getCategories, type Product } from '../services/products';
 import { useCartStore } from '../stores/cartStore';
 import toast from 'react-hot-toast';
@@ -71,9 +72,22 @@ export default function Products() {
 
   if (loading && products.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-16">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-muted-foreground">Loading products...</div>
+      <div className="container mx-auto px-4 py-8">
+        <Skeleton className="h-10 w-48 mb-8" />
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <Skeleton className="h-10 flex-1 max-w-md" />
+          <Skeleton className="h-10 w-48" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="space-y-4">
+              <Skeleton className="h-64 w-full" />
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-2/3" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -115,6 +129,7 @@ export default function Products() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
+            whileHover={{ y: -8, transition: { duration: 0.2 } }}
             className="bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg transition-shadow"
           >
             <Link to={`/products/${product.id}`}>
@@ -147,14 +162,16 @@ export default function Products() {
                   <span className="text-sm text-red-600">Out of Stock</span>
                 )}
               </div>
-              <Button
-                className="w-full"
-                onClick={() => handleAddToCart(product)}
-                disabled={product.stock <= 0}
-              >
-                <ShoppingCart className="w-4 h-4 mr-2" />
-                Add to Cart
-              </Button>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button
+                  className="w-full"
+                  onClick={() => handleAddToCart(product)}
+                  disabled={product.stock <= 0}
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  Add to Cart
+                </Button>
+              </motion.div>
             </div>
           </motion.div>
         ))}

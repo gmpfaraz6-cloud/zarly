@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuthStore } from '../stores/authStore';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -29,7 +30,12 @@ export default function Signup() {
 
   return (
     <div className="container mx-auto px-4 py-16">
-      <div className="max-w-md mx-auto bg-card rounded-lg border border-border p-8 shadow-lg">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="max-w-md mx-auto bg-card rounded-lg border border-border p-8 shadow-lg"
+      >
         <h1 className="text-3xl font-bold text-center mb-8">Sign Up</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -73,9 +79,11 @@ export default function Signup() {
               minLength={6}
             />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Creating account...' : 'Sign Up'}
-          </Button>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Creating account...' : 'Sign Up'}
+            </Button>
+          </motion.div>
         </form>
         <p className="text-center mt-4 text-sm text-muted-foreground">
           Already have an account?{' '}
@@ -83,7 +91,7 @@ export default function Signup() {
             Login
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }

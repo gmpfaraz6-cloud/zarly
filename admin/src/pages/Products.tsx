@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import Skeleton from '../components/Skeleton';
 import { getProducts, deleteProduct, type Product } from '../services/products';
 import { getCategories, type Category } from '../services/categories';
 import toast from 'react-hot-toast';
@@ -65,8 +66,19 @@ export default function Products() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-muted-foreground">Loading products...</div>
+      <div>
+        <div className="flex justify-between items-center mb-8">
+          <Skeleton className="h-10 w-48" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <div className="mb-6">
+          <Skeleton className="h-10 w-64" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <Skeleton key={i} className="h-96" />
+          ))}
+        </div>
       </div>
     );
   }
@@ -100,6 +112,7 @@ export default function Products() {
             key={product.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -4, transition: { duration: 0.2 } }}
             className="bg-card rounded-lg border border-border p-6 hover:shadow-lg transition-shadow"
           >
             {product.images && product.images.length > 0 && (

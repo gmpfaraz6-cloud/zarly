@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, User, Mail, ShoppingBag } from 'lucide-react';
 import Input from '../components/ui/Input';
+import Skeleton from '../components/Skeleton';
 import { getCustomers, getCustomerOrders } from '../services/customers';
 import toast from 'react-hot-toast';
 
@@ -50,8 +51,12 @@ export default function Customers() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-muted-foreground">Loading customers...</div>
+      <div>
+        <Skeleton className="h-10 w-48 mb-8" />
+        <div className="mb-6">
+          <Skeleton className="h-10 w-64" />
+        </div>
+        <Skeleton className="h-96" />
       </div>
     );
   }

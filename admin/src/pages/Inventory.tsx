@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Package, AlertTriangle, Search, TrendingDown } from 'lucide-react';
 import Input from '../components/ui/Input';
+import Skeleton from '../components/Skeleton';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 
@@ -54,8 +55,17 @@ export default function Inventory() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-muted-foreground">Loading inventory...</div>
+      <div>
+        <Skeleton className="h-10 w-64 mb-8" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          {[...Array(3)].map((_, i) => (
+            <Skeleton key={i} className="h-32" />
+          ))}
+        </div>
+        <div className="mb-6">
+          <Skeleton className="h-10 w-64" />
+        </div>
+        <Skeleton className="h-96" />
       </div>
     );
   }

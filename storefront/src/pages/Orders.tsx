@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Package, Clock, Truck, CheckCircle, XCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../components/ui/Button';
+import Skeleton from '../components/Skeleton';
 import { getUserOrders, type Order } from '../services/orders';
 import { useAuthStore } from '../stores/authStore';
 import toast from 'react-hot-toast';
@@ -69,9 +70,12 @@ export default function Orders() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-16">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-muted-foreground">Loading orders...</div>
+      <div className="container mx-auto px-4 py-8">
+        <Skeleton className="h-10 w-48 mb-8" />
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <Skeleton key={i} className="h-64 w-full" />
+          ))}
         </div>
       </div>
     );

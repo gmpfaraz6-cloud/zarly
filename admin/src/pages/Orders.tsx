@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Search, Filter } from 'lucide-react';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
+import Skeleton from '../components/Skeleton';
 import { getOrders, updateOrderStatus, type Order } from '../services/orders';
 import toast from 'react-hot-toast';
 
@@ -46,8 +47,13 @@ export default function Orders() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-muted-foreground">Loading orders...</div>
+      <div>
+        <Skeleton className="h-10 w-48 mb-8" />
+        <div className="flex gap-4 mb-6">
+          <Skeleton className="h-10 flex-1 max-w-md" />
+          <Skeleton className="h-10 w-48" />
+        </div>
+        <Skeleton className="h-96" />
       </div>
     );
   }

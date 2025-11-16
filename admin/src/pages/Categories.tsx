@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import Skeleton from '../components/Skeleton';
 import { getCategories, createCategory, updateCategory, deleteCategory, type Category } from '../services/categories';
 import toast from 'react-hot-toast';
 import CategoryModal from '../components/CategoryModal';
@@ -59,8 +60,19 @@ export default function Categories() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-muted-foreground">Loading categories...</div>
+      <div>
+        <div className="flex justify-between items-center mb-8">
+          <Skeleton className="h-10 w-48" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <div className="mb-6">
+          <Skeleton className="h-10 w-64" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <Skeleton key={i} className="h-80" />
+          ))}
+        </div>
       </div>
     );
   }

@@ -4,6 +4,7 @@ import { DollarSign, ShoppingCart, Package, Users, TrendingUp } from 'lucide-rea
 import { getProducts } from '../services/products';
 import { getOrders } from '../services/orders';
 import { getCustomers } from '../services/customers';
+import Skeleton from '../components/Skeleton';
 import toast from 'react-hot-toast';
 
 export default function Dashboard() {
@@ -48,8 +49,14 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-muted-foreground">Loading dashboard...</div>
+      <div className="space-y-6">
+        <Skeleton className="h-10 w-64" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton key={i} className="h-32" />
+          ))}
+        </div>
+        <Skeleton className="h-64" />
       </div>
     );
   }

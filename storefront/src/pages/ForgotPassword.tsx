@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Mail, ArrowLeft } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
@@ -31,8 +32,18 @@ export default function ForgotPassword() {
   if (sent) {
     return (
       <div className="container mx-auto px-4 py-16">
-        <div className="max-w-md mx-auto bg-card rounded-lg border border-border p-8 shadow-lg text-center">
-          <Mail className="w-16 h-16 mx-auto text-primary mb-4" />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md mx-auto bg-card rounded-lg border border-border p-8 shadow-lg text-center"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: 'spring' }}
+          >
+            <Mail className="w-16 h-16 mx-auto text-primary mb-4" />
+          </motion.div>
           <h1 className="text-2xl font-bold mb-4">Check Your Email</h1>
           <p className="text-muted-foreground mb-6">
             We've sent a password reset link to <strong>{email}</strong>
@@ -43,14 +54,19 @@ export default function ForgotPassword() {
               Back to Login
             </Button>
           </Link>
-        </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
     <div className="container mx-auto px-4 py-16">
-      <div className="max-w-md mx-auto bg-card rounded-lg border border-border p-8 shadow-lg">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="max-w-md mx-auto bg-card rounded-lg border border-border p-8 shadow-lg"
+      >
         <h1 className="text-3xl font-bold text-center mb-2">Forgot Password</h1>
         <p className="text-center text-muted-foreground mb-8">
           Enter your email and we'll send you a reset link
@@ -69,9 +85,11 @@ export default function ForgotPassword() {
               placeholder="your@email.com"
             />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Sending...' : 'Send Reset Link'}
-          </Button>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Sending...' : 'Send Reset Link'}
+            </Button>
+          </motion.div>
         </form>
         <p className="text-center mt-4 text-sm text-muted-foreground">
           Remember your password?{' '}
@@ -79,7 +97,7 @@ export default function ForgotPassword() {
             Sign in
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }
