@@ -6,6 +6,7 @@ import {
   Package, 
   ShoppingCart, 
   Users, 
+  FolderTree,
   Settings,
   LogOut
 } from 'lucide-react';
@@ -55,6 +56,13 @@ export default function Layout() {
             >
               <Users className="w-5 h-5" />
               <span>Customers</span>
+            </Link>
+            <Link
+              to="/categories"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors"
+            >
+              <FolderTree className="w-5 h-5" />
+              <span>Categories</span>
             </Link>
             <Link
               to="/inventory"
