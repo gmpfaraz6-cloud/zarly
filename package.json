@@ -4,15 +4,17 @@
   "description": "A modern e-commerce platform built with React, Vite, and Supabase",
   "private": true,
   "scripts": {
-    "dev": "echo 'Please run: npm run dev:admin or npm run dev:storefront'",
+    "dev": "node dev-server.js",
     "dev:admin": "cd admin && npm run dev",
     "dev:storefront": "cd storefront && npm run dev",
+    "dev:both": "node dev-server.js",
     "build:admin": "cd admin && npm run build",
     "build:storefront": "cd storefront && npm run build",
     "install:admin": "cd admin && npm install",
     "install:storefront": "cd storefront && npm install",
     "install:all": "npm run install:admin && npm run install:storefront"
   },
+  "type": "module",
   "keywords": [
     "e-commerce",
     "react",
