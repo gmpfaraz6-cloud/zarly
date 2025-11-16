@@ -1,0 +1,25 @@
+{
+  "name": "shopfraz",
+  "version": "1.0.0",
+  "description": "A modern e-commerce platform built with React, Vite, and Supabase",
+  "private": true,
+  "scripts": {
+    "dev:admin": "cd admin && npm run dev",
+    "dev:storefront": "cd storefront && npm run dev",
+    "build:admin": "cd admin && npm run build",
+    "build:storefront": "cd storefront && npm run build",
+    "install:admin": "cd admin && npm install",
+    "install:storefront": "cd storefront && npm install",
+    "install:all": "npm run install:admin && npm run install:storefront"
+  },
+  "keywords": [
+    "e-commerce",
+    "react",
+    "vite",
+    "supabase",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+
